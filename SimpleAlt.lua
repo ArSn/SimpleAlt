@@ -88,11 +88,6 @@ function KazWindow:draw()
     if self.title ~= '' then
         draw_string_Helvetica_10(self.x + 2, self.y + self.height - 12, self.title)
     end
-
-
-    -- draw the info text
-    --    draw_string_Helvetica_18(SCREEN_WIDTH - 90, 20, string.format("%5d", getNextHighestThousand()))
-    --    draw_string_Helvetica_18(SCREEN_WIDTH - 90, 2, string.format("%5d", getNextLowestThousand()))
 end
 
 
@@ -137,7 +132,11 @@ function KazButton:draw()
     graphics.set_color(0, 0, 0, 0.5)
     graphics.draw_rectangle(self.x, self.y, self.x + self.width, self.y + self.height)
 
-    graphics.set_color(1, 1, 1, 1)
+    if self:isHovered() then
+        graphics.set_color(0.12, 0.82, 0.08, 1)
+    else
+        graphics.set_color(1, 1, 1, 1)
+    end
 
     graphics.set_width(1)
 
@@ -146,20 +145,12 @@ function KazButton:draw()
     if self.label ~= '' then
         draw_string_Helvetica_10(self.x + 5, self.y + self.height - 15, self.label)
     end
---
---    -- top
---    graphics.draw_line(self.x, self.y + self.height, self.x + self.width, self.y + self.height)
---    -- right
---    graphics.draw_line(self.x + self.width, self.y + self.height, self.x + self.width, self.y)
---    -- bottom
---    graphics.draw_line(self.x, self.y, self.x + self.width, self.y)
---    -- left
---    graphics.draw_line(self.x, self.y, self.x, self.y + self.height)
+end
 
-
-    -- draw the info text
-    --    draw_string_Helvetica_18(SCREEN_WIDTH - 90, 20, string.format("%5d", getNextHighestThousand()))
-    --    draw_string_Helvetica_18(SCREEN_WIDTH - 90, 2, string.format("%5d", getNextLowestThousand()))
+function KazButton:isHovered()
+    return ((MOUSE_X >= self.x and MOUSE_X <= self.x + self.width)
+            and
+            (MOUSE_Y >= self.y and MOUSE_Y <= self.y + self.height));
 end
 
 
