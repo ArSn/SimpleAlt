@@ -4,6 +4,7 @@
 require "graphics"
 
 dataref("SELECTED_ALT", "sim/cockpit2/autopilot/altitude_dial_ft", "writable")
+dataref("VIEW_TYPE", "sim/graphics/view/view_type")
 
 
 
@@ -214,6 +215,12 @@ function renderControlButton(button, altitude)
 end
 
 function simple_alt_draw_alt_selector()
+
+    -- only draw selector in cockpit
+    if VIEW_TYPE ~= 1026 then
+        return
+    end
+
     simpleAltWindow:draw()
 
     renderControlButton(increaseByHunderedButton, getNextHighestHundred());
@@ -225,6 +232,12 @@ end
 do_every_draw("simple_alt_draw_alt_selector()")
 
 function simple_alt_mouse_click_events()
+
+    -- only handle selector events in cockpit
+    if VIEW_TYPE ~= 1026 then
+        return
+    end
+
     -- we will only react once
     if MOUSE_STATUS ~= "down" then
         return
