@@ -117,6 +117,7 @@ function KazButton.new(x, y, width, height)
     self.height = height
 
     self.label = '';
+    self.onClickEvent = nil;
     return self
 end
 
@@ -138,8 +139,6 @@ function KazButton:draw()
         graphics.set_color(1, 1, 1, 1)
     end
 
-    graphics.set_width(1)
-
     KazUiUtil.drawRectangle(self.x, self.y, self.x + self.width, self.y + self.height)
 
     if self.label ~= '' then
@@ -151,6 +150,16 @@ function KazButton:isHovered()
     return ((MOUSE_X >= self.x and MOUSE_X <= self.x + self.width)
             and
             (MOUSE_Y >= self.y and MOUSE_Y <= self.y + self.height));
+end
+
+function KazButton:onClick(callback)
+    self.onClickEvent = callback
+end
+
+function KazButton:handleClick()
+    if self:isHovered() and self.onClickEvent ~= nil then
+        self.onClickEvent(self)
+    end
 end
 
 
@@ -179,6 +188,11 @@ end
 
 
 
+function setAutopilotAltitude(altitude)
+    SELECTED_ALT = altitude
+end
+
+
 
 
 local simpleAltWindow = KazWindow.new(SCREEN_WIDTH - 115, 20, 95, 75)
@@ -186,35 +200,26 @@ simpleAltWindow:setTitle('SimpleAlt');
 
 local increaseByHunderedButton = KazButton.new(simpleAltWindow.x + 5, simpleAltWindow.y + 35, 41, 21)
 local decreaseByHunderedButton = KazButton.new(simpleAltWindow.x + 5, simpleAltWindow.y + 5, 41, 21)
-
 local increaseByThousandButton = KazButton.new(simpleAltWindow.x + 50, simpleAltWindow.y + 35, 41, 21)
 local decreaseByThousandButton = KazButton.new(simpleAltWindow.x + 50, simpleAltWindow.y + 5, 41, 21)
 
 
 
-
-
+function renderControlButton(button, altitude)
+    button:setLabel(altitude);
+    button:onClick(function (callerButton)
+        setAutopilotAltitude(altitude)
+    end)
+    button:draw()
+end
 
 function draw_alt_selector()
-    -- does we have to draw anything?
---    if MOUSE_Y > 50 or MOUSE_X < SCREEN_WIDTH - 100 then
---        return
---    end
-
-
     simpleAltWindow:draw()
 
-    increaseByHunderedButton:setLabel(getNextHighestHundred());
-    increaseByHunderedButton:draw()
-
-    decreaseByHunderedButton:setLabel(getNextLowestHundred());
-    decreaseByHunderedButton:draw()
-
-    increaseByThousandButton:setLabel(getNextHighestThousand());
-    increaseByThousandButton:draw()
-
-    decreaseByThousandButton:setLabel(getNextLowestThousand());
-    decreaseByThousandButton:draw()
+    renderControlButton(increaseByHunderedButton, getNextHighestHundred());
+    renderControlButton(decreaseByHunderedButton, getNextLowestHundred());
+    renderControlButton(increaseByThousandButton, getNextHighestThousand());
+    renderControlButton(decreaseByThousandButton, getNextLowestThousand());
 end
 
 do_every_draw("draw_alt_selector()")
@@ -225,12 +230,13 @@ function simple_alt_mouse_click_events()
         return
     end
 
-    if MOUSE_X > SCREEN_WIDTH - 100 and MOUSE_Y < 50 then
-        SELECTED_ALT = getNextHighestThousand()
-    end
+    increaseByHunderedButton:handleClick()
+    decreaseByHunderedButton:handleClick()
+    increaseByThousandButton:handleClick()
+    decreaseByThousandButton:handleClick()
 end
 
---do_on_mouse_click("simple_alt_mouse_click_events()")
+do_on_mouse_click("simple_alt_mouse_click_events()")
 
 
 
