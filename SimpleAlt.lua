@@ -213,7 +213,7 @@ function renderControlButton(button, altitude)
     button:draw()
 end
 
-function draw_alt_selector()
+function simple_alt_draw_alt_selector()
     simpleAltWindow:draw()
 
     renderControlButton(increaseByHunderedButton, getNextHighestHundred());
@@ -222,7 +222,7 @@ function draw_alt_selector()
     renderControlButton(decreaseByThousandButton, getNextLowestThousand());
 end
 
-do_every_draw("draw_alt_selector()")
+do_every_draw("simple_alt_draw_alt_selector()")
 
 function simple_alt_mouse_click_events()
     -- we will only react once
@@ -234,6 +234,8 @@ function simple_alt_mouse_click_events()
     decreaseByHunderedButton:handleClick()
     increaseByThousandButton:handleClick()
     decreaseByThousandButton:handleClick()
+
+    RESUME_MOUSE_CLICK = true
 end
 
 do_on_mouse_click("simple_alt_mouse_click_events()")
