@@ -160,6 +160,7 @@ end
 function KazButton:handleClick()
     if self:isHovered() and self.onClickEvent ~= nil then
         self.onClickEvent(self)
+        RESUME_MOUSE_CLICK = true
     end
 end
 
@@ -247,8 +248,6 @@ function simple_alt_mouse_click_events()
     decreaseByHunderedButton:handleClick()
     increaseByThousandButton:handleClick()
     decreaseByThousandButton:handleClick()
-
-    RESUME_MOUSE_CLICK = true
 end
 
 do_on_mouse_click("simple_alt_mouse_click_events()")
